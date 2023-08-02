@@ -13,14 +13,9 @@ function StudentForm() {
     // Called when the submit button is pressed
     const handleSubmit = (event) => {
         event.preventDefault();
-        // This function is called by the StudentForm when the submit button is pressed
+        // Dispatch an action to trigger the addStudent saga
         dispatch({ type: 'ADD_STUDENT', payload: student })
-
-        clearStudentFields();
-    }
-
-    // Clear fields of the form by reseting the user
-    const clearStudentFields = () => {
+        // Clear fields
         setStudent({ cohort: '', first_name: '', last_name: '', github_name: '' });
     }
 

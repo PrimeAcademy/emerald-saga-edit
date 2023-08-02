@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import axios from 'axios';
 
 function EditForm() {
 
@@ -9,6 +8,7 @@ function EditForm() {
   const studentToEdit = useSelector((store) => store.studentToEdit);
 
   function handleChange(event, propertyToChange) {
+    // Dispatch an action to update the studentToEdit piece of state in the redux store
     dispatch({
       type: 'EDIT_ONCHANGE',
       payload: { property: propertyToChange, value: event.target.value }
@@ -16,9 +16,9 @@ function EditForm() {
 
   }
 
-  // Called when the submit button is pressed
   function handleSubmit(event) {
     event.preventDefault();
+    // Dispatch an action to trigger the editStudent saga
     dispatch({ type: 'EDIT_STUDENT', payload: studentToEdit })
     history.push('/');
   };
