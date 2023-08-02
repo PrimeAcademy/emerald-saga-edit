@@ -6,7 +6,7 @@ import axios from 'axios';
 
 import logger from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
-import {takeEvery, put, takeLatest} from 'redux-saga/effects';
+import { takeEvery, put, takeLatest } from 'redux-saga/effects';
 
 // Redux
 import { createStore, combineReducers, applyMiddleware } from 'redux';
@@ -17,7 +17,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 // all the students from the DB
 const studentList = (state = [], action) => {
-    if(action.type === 'SET_STUDENT_LIST') {
+    if (action.type === 'SET_STUDENT_LIST') {
         return action.payload;
     }
 
@@ -25,7 +25,17 @@ const studentList = (state = [], action) => {
 }
 
 // hold only the single student object being edited
-const editStudent = (state  = {}, action) => {
+const studentToEdit = (state = {}, action) => {
+    if (action.type === 'SET_STUDENT_TO_EDIT') {
+        // action.payload is the object from the DB
+        return action.payload;
+    } 
+    if (action.type === 'EDIT_ONCHANGE') {
+        return {
+            ...state, 
+            [action.payload.property]: action.payload.value
+        }
+    }
 
     return state;
 }
@@ -48,13 +58,21 @@ function* addStudent(action) {
     }
 }
 
-
-
+function* editStudent(action) {
+    try {
+        yield 
+        yield axios.put(`/students/${action.payload.id}`, action.payload)
+        yield put({ type: 'FETCH_STUDENTS' })
+    } catch (err) {
+        console.log(err)
+    }
+}
 
 
 function* rootSaga() {
     yield takeLatest('FETCH_STUDENTS', fetchStudents);
     yield takeLatest('ADD_STUDENT', addStudent);
+    yield takeLatest('EDIT_STUDENT', editStudent);
 }
 
 
@@ -64,7 +82,7 @@ function* rootSaga() {
 const store = createStore(
     combineReducers({
         studentList,
-        editStudent
+        studentToEdit
     }),
     applyMiddleware(sagaMiddleware, logger),
 );
@@ -75,9 +93,9 @@ sagaMiddleware.run(rootSaga);
 // our entire application
 const root = ReactDOM.createRoot(document.getElementById('react-root'));
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>
+    <React.StrictMode>
+        <Provider store={store}>
+            <App />
+        </Provider>
+    </React.StrictMode>
 )

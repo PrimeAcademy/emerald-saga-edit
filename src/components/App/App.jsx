@@ -3,6 +3,7 @@ import {
   Route,
 } from 'react-router-dom';
 import Home from '../Home/Home';
+import EditForm from '../StudentDetail/EditForm';
 import './App.css';
 
 
@@ -17,6 +18,7 @@ function App() {
             <Router>
                 <Route exact path="/" component={Home} />
                 {/* TODO Add Edit Route */}
+                <Route exact path="/edit" component={EditForm} />
             </Router>
         </div>
     );

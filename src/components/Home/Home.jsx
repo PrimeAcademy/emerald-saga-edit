@@ -17,19 +17,10 @@ function Home() {
         dispatch({type: 'FETCH_STUDENTS'});
     }, [])
 
-
-    // This function is called by the StudentForm when the submit button is pressed
-    const addStudent = (newStudent) => {
-        dispatch({type: 'ADD_STUDENT', payload: {github_name: newStudent.githubName}})
-    }
-
-    // get students from DB
-
-
     return (
         <div className="App">
             <h2>Add a Student</h2>
-            <StudentForm addStudent={addStudent} currentStudent={currentStudent} />
+            <StudentForm currentStudent={currentStudent} />
 
             <h2>Student list:</h2>
             <StudentList />

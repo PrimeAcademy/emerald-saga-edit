@@ -2,37 +2,25 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
-function EditForm(props) {
+function EditForm() {
 
   const dispatch = useDispatch();
   const history = useHistory();
-  const editStudent = useSelector((store) => store.editStudent);
+  const studentToEdit = useSelector((store) => store.studentToEdit);
 
-  function handleChange(event) {
-    dispatch({ 
-                type: 'EDIT_ONCHANGE', 
-                payload: { property: 'github_name', value: event.target.value }
-            });
+  function handleChange(event, propertyToChange) {
+    dispatch({
+      type: 'EDIT_ONCHANGE',
+      payload: { property: propertyToChange, value: event.target.value }
+    });
 
   }
 
   // Called when the submit button is pressed
   function handleSubmit(event) {
     event.preventDefault();
-
-    // PUT REQUEST to /students/:id
-    axios.put(`/students/${editStudent.id}`, editStudent)
-        .then( response => {
-            // clean up reducer data            
-            dispatch({ type: 'EDIT_CLEAR' });
-
-            // refresh will happen with useEffect on Home
-            history.push('/'); // back to list
-        })
-        .catch(error => {
-            console.log('error on PUT: ', error);
-        })
-    
+    dispatch({ type: 'EDIT_STUDENT', payload: studentToEdit })
+    history.push('/');
   };
 
 
@@ -41,10 +29,25 @@ function EditForm(props) {
       <h2>Edit Student</h2>
       <form onSubmit={handleSubmit}>
         <input
-          onChange={(event) => handleChange(event)}
-          placeholder='GitHub username'
-          value={editStudent.github_name}
+          onChange={(event) => handleChange(event, 'cohort')}
+          placeholder='Cohort'
+          value={studentToEdit.cohort}
         />
+        <input
+        onChange={(event) => handleChange(event, 'first_name')}
+        placeholder='First name'
+        value={studentToEdit.first_name}
+      />
+       <input
+        onChange={(event) => handleChange(event, 'last_name')}
+        placeholder='Last name'
+        value={studentToEdit.last_name}
+      />
+       <input
+        onChange={(event) => handleChange(event, 'github_name')}
+        placeholder='GitHub username'
+        value={studentToEdit.github_name}
+      />
         <input type='submit' value='Update Student' />
       </form>
     </>
